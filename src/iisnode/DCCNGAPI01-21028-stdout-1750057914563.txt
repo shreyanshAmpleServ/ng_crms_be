@@ -1,0 +1,24 @@
+🌱 Created new PrismaClient instance (dev)
+Server is running on http://localhost:\\.\pipe\0afa6bf3-f141-4c20-8a4f-0b0efa12f47c
+Page :  NaN undefined NaN undefined undefined
+Page :  NaN undefined NaN undefined undefined
+Creating Vendor Error :  PrismaClientKnownRequestError: 
+Invalid `prisma.crms_m_vendor.create()` invocation in
+C:\inetpub\wwwroot\crms_2052\src\v1\models\vendorModel.js:52:45
+
+  49 const createVendor = async (data) => {
+  50   try {
+  51     // Create the Vendor
+→ 52     const user = await prisma.crms_m_vendor.create(
+The table `dbo.crms_m_user` does not exist in the current database.
+    at Wn.handleRequestError (C:\inetpub\wwwroot\crms_2052\node_modules\@prisma\client\runtime\library.js:121:7534)
+    at Wn.handleAndLogRequestError (C:\inetpub\wwwroot\crms_2052\node_modules\@prisma\client\runtime\library.js:121:6858)
+    at Wn.request (C:\inetpub\wwwroot\crms_2052\node_modules\@prisma\client\runtime\library.js:121:6565)
+    at async l (C:\inetpub\wwwroot\crms_2052\node_modules\@prisma\client\runtime\library.js:130:10067)
+    at async Object.createVendor (C:\inetpub\wwwroot\crms_2052\src\v1\models\vendorModel.js:52:18)
+    at async Object.createVendor (C:\inetpub\wwwroot\crms_2052\src\v1\services\vendorService.js:13:10)
+    at async createVendor (C:\inetpub\wwwroot\crms_2052\src\v1\controller\vendorControlle.js:22:18) {
+  code: 'P2021',
+  meta: { modelName: 'crms_m_vendor', table: 'dbo.crms_m_user' },
+  clientVersion: '6.5.0'
+}

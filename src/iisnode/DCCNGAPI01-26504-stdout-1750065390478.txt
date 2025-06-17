@@ -1,0 +1,2 @@
+🌱 Created new PrismaClient instance (dev)
+Server is running on http://localhost:\\.\pipe\101f51f2-edd8-4b4b-942b-c9885c38f754

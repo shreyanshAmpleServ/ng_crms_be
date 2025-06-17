@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>iisnode logs</title>
+    <style type="text/css">
+        body
+        {
+            font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        }
+        table
+        {
+            border-collapse: collapse;
+        }
+        td, th
+        {
+            border: 1px solid lightgray;
+            padding: 3px 7px 2px 7px;
+        }
+        th
+        {
+            text-align: left;
+            padding-top: 5px;
+            padding-bottom: 4px;
+            background-color: Gray;
+            color: #ffffff;
+        }
+        td.stderr
+        {
+            color: Red;
+        }
+    </style>
+</head>
+<body>
+    <table id="logFilesTable">
+        <tr>
+            <th>
+                Computer name
+            </th>
+            <th>
+                PID
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Created
+            </th>
+            <th>
+                Link
+            </th>
+        </tr>
+    </table>
+    <p id="lastUpdated"></p>
+    <script type="text/javascript">
+
+        // this is replaced with actual data at runtime by code in interceptor.js
+        var logFiles = [{"file":"DCCNGAPI01-21028-stderr-1750057914566.txt","computername":"DCCNGAPI01","pid":21028,"type":"stderr","created":1750057914566},{"file":"DCCNGAPI01-21028-stdout-1750057914563.txt","computername":"DCCNGAPI01","pid":21028,"type":"stdout","created":1750057914563},{"file":"DCCNGAPI01-23588-stderr-1750055603375.txt","computername":"DCCNGAPI01","pid":23588,"type":"stderr","created":1750055603375},{"file":"DCCNGAPI01-23588-stdout-1750055603371.txt","computername":"DCCNGAPI01","pid":23588,"type":"stdout","created":1750055603371},{"file":"DCCNGAPI01-24816-stderr-1750056306332.txt","computername":"DCCNGAPI01","pid":24816,"type":"stderr","created":1750056306332},{"file":"DCCNGAPI01-24816-stdout-1750056306329.txt","computername":"DCCNGAPI01","pid":24816,"type":"stdout","created":1750056306329},{"file":"DCCNGAPI01-26504-stderr-1750065390481.txt","computername":"DCCNGAPI01","pid":26504,"type":"stderr","created":1750065390481},{"file":"DCCNGAPI01-26504-stdout-1750065390478.txt","computername":"DCCNGAPI01","pid":26504,"type":"stdout","created":1750065390478},{"file":"DCCNGAPI01-28068-stderr-1750056968749.txt","computername":"DCCNGAPI01","pid":28068,"type":"stderr","created":1750056968749},{"file":"DCCNGAPI01-28068-stdout-1750056968746.txt","computername":"DCCNGAPI01","pid":28068,"type":"stdout","created":1750056968746},{"file":"DCCNGAPI01-31836-stderr-1750056714105.txt","computername":"DCCNGAPI01","pid":31836,"type":"stderr","created":1750056714105},{"file":"DCCNGAPI01-31836-stdout-1750056714102.txt","computername":"DCCNGAPI01","pid":31836,"type":"stdout","created":1750056714102},{"file":"DCCNGAPI01-33268-stderr-1750056524813.txt","computername":"DCCNGAPI01","pid":33268,"type":"stderr","created":1750056524813},{"file":"DCCNGAPI01-33268-stdout-1750056524811.txt","computername":"DCCNGAPI01","pid":33268,"type":"stdout","created":1750056524811},{"file":"DCCNGAPI01-35284-stderr-1750055652246.txt","computername":"DCCNGAPI01","pid":35284,"type":"stderr","created":1750055652246},{"file":"DCCNGAPI01-35284-stdout-1750055652243.txt","computername":"DCCNGAPI01","pid":35284,"type":"stdout","created":1750055652243},{"file":"DCCNGAPI01-35728-stderr-1750055395359.txt","computername":"DCCNGAPI01","pid":35728,"type":"stderr","created":1750055395359},{"file":"DCCNGAPI01-35728-stdout-1750055395357.txt","computername":"DCCNGAPI01","pid":35728,"type":"stdout","created":1750055395357},{"file":"DCCNGAPI01-38576-stderr-1750056360567.txt","computername":"DCCNGAPI01","pid":38576,"type":"stderr","created":1750056360567},{"file":"DCCNGAPI01-38576-stdout-1750056360565.txt","computername":"DCCNGAPI01","pid":38576,"type":"stdout","created":1750056360565},{"file":"DCCNGAPI01-40284-stderr-1750056231206.txt","computername":"DCCNGAPI01","pid":40284,"type":"stderr","created":1750056231206},{"file":"DCCNGAPI01-40284-stdout-1750056231204.txt","computername":"DCCNGAPI01","pid":40284,"type":"stdout","created":1750056231204}];
+        var lastUpdated = 1750065391521;
+        var date = new Date();
+
+        date.setTime(lastUpdated);
+        document.getElementById('lastUpdated').innerHTML = 'Index was last updated ' + date;
+
+        logFiles.sort(function (a, b) {
+            return b.created - a.created;
+        });
+
+        var logFilesTable = document.getElementById("logFilesTable");
+        for (var i = 0; i < logFiles.length; i++) {
+            var logFile = logFiles[i];
+            date.setTime(logFile.created);
+            var row = logFilesTable.insertRow(-1);
+            var computerNameCell = row.insertCell(0);
+            var pidCell = row.insertCell(1);
+            var typeCell = row.insertCell(2);
+            var dateCell = row.insertCell(3);
+            var logCell = row.insertCell(4);
+            computerNameCell.innerHTML = logFile.computername;
+            pidCell.innerHTML = logFile.pid.toString();
+            typeCell.innerHTML = logFile.type;
+            typeCell.setAttribute('class', logFile.type);
+            dateCell.innerHTML = date.toString();
+            logCell.innerHTML = '<a href="' + logFile.file + '">log</a>';
+        };
+
+    </script>
+</body>
+</html>
