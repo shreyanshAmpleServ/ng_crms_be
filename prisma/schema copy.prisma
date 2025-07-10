@@ -634,21 +634,24 @@ model crms_templates {
 }
 
 model crms_attachments {
-  id                  Int         @id(map: "PK__crms_att__3213E83F7CCEF8FB") @default(autoincrement())
-  related_entity_type String?     @db.NVarChar(50)
+  id                  Int       @id(map: "PK__crms_att__3213E83F7CCEF8FB") @default(autoincrement())
+  related_entity_type String?   @db.NVarChar(50)
   related_entity_id   Int?
-  filename            String?     @db.NVarChar(255)
-  is_active           String      @default("Y", map: "DF__crms_atta__is_ac__55BFB948") @db.Char(1)
-  createdate          DateTime    @default(now(), map: "DF__crms_atta__creat__56B3DD81") @db.DateTime
-  updatedate          DateTime?   @db.DateTime
-  createdby           Int         @default(1, map: "DF__crms_atta__creat__57A801BA")
+  filename            String?   @db.NVarChar(255)
+  is_active           String    @default("Y", map: "DF__crms_atta__is_ac__55BFB948") @db.Char(1)
+  createdate          DateTime  @default(now(), map: "DF__crms_atta__creat__56B3DD81") @db.DateTime
+  updatedate          DateTime? @db.DateTime
+  createdby_name      String?   @db.VarChar(200)
+  createdby_email     String?   @db.VarChar(200)
+  createdby           Int       @default(1, map: "DF__crms_atta__creat__57A801BA")
+  updatedby_name      String?   @db.VarChar(200)
+  updatedby_email     String?   @db.VarChar(200)
   updatedby           Int?
   log_inst            Int?
-  description         String?     @db.NVarChar(Max)
+  description         String?   @db.NVarChar(Max)
   file                String?
-  file_type           String?     @db.NVarChar(Max)
+  file_type           String?   @db.NVarChar(Max)
   related_entity_name String?
-  created_user        crms_m_user @relation(fields: [createdby], references: [id], onUpdate: NoAction)
 }
 
 model crms_calls {
