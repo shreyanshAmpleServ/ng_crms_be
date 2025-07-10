@@ -63,9 +63,10 @@ const deleteCountry = async (id) => {
   }
 };
 
-const getAllCountries = async () => {
+const getAllCountries = async (is_active) => {
   try {
     const countries = await prisma.Country.findMany({
+      where:{is_active},
       orderBy: [
         { name: "asc" },
         // { updatedate: 'desc' },

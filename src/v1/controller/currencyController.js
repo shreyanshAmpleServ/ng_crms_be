@@ -40,7 +40,8 @@ const deleteCurrency = async (req, res, next) => {
 
 const getAllCurrencies = async (req, res, next) => {
     try {
-        const currencies = await currencyService.getAllCurrenciesService();
+        const {is_active} = req.query
+        const currencies = await currencyService.getAllCurrenciesService(is_active);
         res.status(200).success(null, currencies);
     } catch (error) {
         next(error);

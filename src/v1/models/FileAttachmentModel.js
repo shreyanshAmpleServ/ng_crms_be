@@ -13,25 +13,25 @@ const createAttachment = async (data) => {
         createdby: data.createdby || 1,
         log_inst: data.log_inst || 1,
       },
-      include: {
-        created_user: {
-          select: {
-            id: true,
-            full_name: true,
-            profile_img: true,
-            crms_d_user_role: {
-              select: {
-                crms_m_role: {
-                  select: {
-                    role_name: true,
-                    id: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      // include: {
+      //   created_user: {
+      //     select: {
+      //       id: true,
+      //       full_name: true,
+      //       profile_img: true,
+      //       crms_d_user_role: {
+      //         select: {
+      //           crms_m_role: {
+      //             select: {
+      //               role_name: true,
+      //               id: true,
+      //             },
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
     });
     return callType;
   } catch (error) {
@@ -69,23 +69,23 @@ const updateAttachment = async (id, data) => {
         updatedate: new Date(),
       },
       include: {
-        created_user: {
-          select: {
-            id: true,
-            full_name: true,
-            profile_img: true,
-            crms_d_user_role: {
-              select: {
-                crms_m_role: {
-                  select: {
-                    role_name: true,
-                    id: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // created_user: {
+        //   select: {
+        //     id: true,
+        //     full_name: true,
+        //     profile_img: true,
+        //     crms_d_user_role: {
+        //       select: {
+        //         crms_m_role: {
+        //           select: {
+        //             role_name: true,
+        //             id: true,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
       },
     });
     return updatedCallType;
@@ -168,23 +168,23 @@ const getAllAttachment = async (
       skip,
       take: size,
       include: {
-        created_user: {
-          select: {
-            id: true,
-            full_name: true,
-            profile_img: true,
-            crms_d_user_role: {
-              select: {
-                crms_m_role: {
-                  select: {
-                    role_name: true,
-                    id: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+        // created_user: {
+        //   select: {
+        //     id: true,
+        //     full_name: true,
+        //     profile_img: true,
+        //     crms_d_user_role: {
+        //       select: {
+        //         crms_m_role: {
+        //           select: {
+        //             role_name: true,
+        //             id: true,
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // },
       },
       orderBy: [{ updatedate: "desc" }, { createdate: "desc" }],
     });

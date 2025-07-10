@@ -68,9 +68,10 @@ const deleteLostReason = async (id) => {
 };
 
 // Get all lost reasons
-const getAllLostReasons = async () => {
+const getAllLostReasons = async (is_active) => {
   try {
     const lostReasons = await prisma.LostReasons.findMany({
+      where:{is_active:is_active},
       orderBy: [
         { order: "asc" },
         { updatedate: "desc" },

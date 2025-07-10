@@ -16,8 +16,8 @@ const deleteCurrencyService = async (id) => {
     return await currencyModel.deleteCurrency(id);
 };
 
-const getAllCurrenciesService = async () => {
-    return await currencyModel.getAllCurrency();
+const getAllCurrenciesService = async (is_active) => {
+    return await currencyModel.getAllCurrency(is_active);
 };
 
 module.exports = {

@@ -63,11 +63,12 @@ const deleteState = async (id) => {
 };
 
 // Get all states
-const getAllStates = async ({ country_id }) => {
+const getAllStates = async ({ country_id,is_active }) => {
   try {
     const states = await prisma.State.findMany({
       where: {
-        country_code: Number(country_id),
+        ...(country_id && {country_code: Number(country_id)}),
+        ...(is_active && {is_active:is_active})
       },
       orderBy: [{ updatedate: "desc" }, { createdate: "desc" }],
     });

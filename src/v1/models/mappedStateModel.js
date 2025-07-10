@@ -89,7 +89,7 @@ const deleteState = async (id) => {
 };
 
 // Get all states
-const getAllStates = async (search, page, size, country_id) => {
+const getAllStates = async (search, page, size, country_id,is_active) => {
   try {
     page = !page || page == 0 ? 1 : page;
     size = size || 10;
@@ -97,10 +97,28 @@ const getAllStates = async (search, page, size, country_id) => {
 
     const filters = {};
     if (search) {
-      filters.name = { contains: search.toLowerCase() };
+      // filters.name = { contains: search.toLowerCase() };
+      filters.OR = [
+        {
+          country_details: {
+            name: { contains: search.toLowerCase() },
+          },
+        },
+        {
+          country_details: {
+            code: { contains: search.toLowerCase() },
+          },
+        },
+        {
+          name: { contains: search.toLowerCase() }
+        }
+      ]
     }
     if (country_id) {
       filters.country_code = { equals: Number(country_id) };
+    }
+    if (is_active) {
+      filters.is_active =is_active ;
     }
     const states = await prisma.crms_m_states.findMany({
       where: filters,

@@ -13,7 +13,8 @@ const createTaxSetup = async (req, res, next) => {
 
 const findTaxSetupById = async (req, res, next) => {
     try {
-        const tax = await taxSetupService.findTaxSetupById(req.params.id);
+        const {is_active} = req.query
+        const tax = await taxSetupService.findTaxSetupById(req.params.id,is_active);
         if (!tax) throw new CustomError('tax not found', 404);
         res.status(200).success(null, tax);
     } catch (error) {

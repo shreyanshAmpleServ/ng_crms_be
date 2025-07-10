@@ -12,5 +12,6 @@ router.delete('/order/:id', authenticateToken, orderController.deleteOrder);
 router.get('/order', authenticateToken, orderController.getAllOrder);
 router.get('/sales-types', authenticateToken, orderController.getSalesType);
 router.get('/get-order-code', authenticateToken, orderController.generateOrderCode);
+router.get('/sync-to-invoice', authenticateToken, orderController.generateOrderCode);
 
 module.exports = router;

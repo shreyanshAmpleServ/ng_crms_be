@@ -206,6 +206,29 @@ const deleteOrder = async (orderId) => {
     throw new Error("Failed to delete order and associated items");
   }
 };
+// Delete a Order
+const syncToInvoice = async (orderId) => {
+  try {
+    const result = await prisma.$transaction(async (prisma) => {
+      // Delete Order Items first
+      await prisma.crms_d_order_items.deleteMany({
+        where: { parent_id: Number(orderId) },
+      });
+
+      // Delete the Order
+      const deletedOrder = await prisma.crms_d_orders.delete({
+        where: { id: Number(orderId) },
+      });
+
+      return deletedOrder;
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Failed to delete order and order items:", error);
+    throw new Error("Failed to delete order and associated items");
+  }
+};
 
 const getAllOrder = async (search, page, size, startDate, endDate) => {
   try {
@@ -322,4 +345,5 @@ module.exports = {
   getAllOrder,
   getSalesType,
   generateOrderCode,
+  syncToInvoice,
 };

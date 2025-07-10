@@ -16,8 +16,8 @@ const deleteState = async (id) => {
     return await statesModel.deleteState(id);
 };
 
-const getAllStates = async (country_id) => {
-    return await statesModel.getAllStates(country_id);
+const getAllStates = async (country_id,is_active) => {
+    return await statesModel.getAllStates(country_id,is_active);
 };
 
 module.exports = {

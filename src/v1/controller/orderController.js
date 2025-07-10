@@ -65,15 +65,24 @@ const updateOrder = async (req, res, next) => {
 
 const deleteOrder = async (req, res, next) => {
     try {
-        const { orderItemsData, id, ...orderData } = req.body;
+        const existingData = await findOrderById(req.params.id);
         await orderService.deleteOrder(req.params.id);
-        res.status(200).success('product deleted successfully', null);
+        res.status(200).success('order deleted successfully', null);
         if (existingData.attachment1) {
             await deleteFromBackblaze(existingData.attachment1); // Delete the old logo
           }
           if (existingData.attachment2) {
             await deleteFromBackblaze(existingData.attachment2); // Delete the old logo
           }
+    } catch (error) {
+        next(error);
+    }
+};
+const syncToInvoice = async (req, res, next) => {
+    try {
+        // const existingData = await findOrderById(req.params.id);
+        await orderService.syncToInvoice(req.params.id);
+        res.status(200).success('order deleted successfully', null);
     } catch (error) {
         next(error);
     }
@@ -115,4 +124,5 @@ module.exports = {
     getAllOrder,
     getSalesType,
     generateOrderCode,
+    syncToInvoice,
 };

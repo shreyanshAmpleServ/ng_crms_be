@@ -40,8 +40,8 @@ const deleteState = async (req, res, next) => {
 
 const getAllStates = async (req, res, next) => {
     try {
-        const { search,page,size,country_id} = req.query
-        const states = await statesService.getAllStates(search,Number(page),Number(size),Number(country_id));
+        const { search,page,size,country_id,is_active} = req.query
+        const states = await statesService.getAllStates(search,Number(page),Number(size),Number(country_id),is_active);
         res.status(200).success(null, states);
     } catch (error) {
         next(error);

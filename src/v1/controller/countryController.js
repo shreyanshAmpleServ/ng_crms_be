@@ -40,7 +40,8 @@ const deleteCountry = async (req, res, next) => {
 
 const getAllCountries = async (req, res, next) => {
   try {
-    const countries = await countryService.getAllCountriesService();
+    const {is_active} = req.query
+    const countries = await countryService.getAllCountriesService(is_active);
     res.status(200).success(null, countries);
   } catch (error) {
     next(error);

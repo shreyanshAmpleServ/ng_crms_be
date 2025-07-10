@@ -5,8 +5,11 @@ const prisma = require("../../utils/prismaClient");
 // Create a new tax
 const createTaxSetup = async (data) => {
   try {
-    console.log("Create Tax setUp : ", data);
-    // Create the tax
+    const { validFrom, validTo } = data;
+
+    if (validFrom && validTo && new Date(validTo) < new Date(validFrom)) {
+      throw new CustomError(`Valid from  must be greater than or equal to valid to`, 400);
+    }
     const tax = await prisma.crms_m_tax_setup.create({
       data: {
         ...data,
@@ -18,26 +21,22 @@ const createTaxSetup = async (data) => {
         updatedby: data.createdby || 1,
         createdby: data.createdby || 1,
       },
-      // include:{
-      //   Account:{
-      //     select:{
-      //       firstName:true,
-      //       lastName:true,
-      //       id:true
-      //     }
-      //   },
-      // },
     });
     return tax;
   } catch (error) {
     console.log("Error tax SetUp Modal Create : ", error);
-    throw new CustomError(`Error creating tax: ${error.message}`, 500);
+    throw new CustomError(`Error creating tax: ${error.message}`, error.status ||  500);
   }
 };
 
 // Update a tax
 const updateTaxSetup = async (id, data) => {
   try {
+    const { validFrom, validTo } = data;
+
+    if (validFrom && validTo && new Date(validTo) < new Date(validFrom)) {
+      throw new CustomError("`validTo` must be greater than or equal to `validFrom`", 400);
+    }
     const updatedTax = await prisma.crms_m_tax_setup.update({
       where: { id: parseInt(id) },
       data: {
@@ -46,16 +45,6 @@ const updateTaxSetup = async (id, data) => {
         updatedate: new Date(),
         updatedby: data.updatedby || 1,
       },
-      // include:{
-      //   Account:{
-      //     select:{
-      //       firstName:true,
-      //       lastName:true,
-      //       id:true
-      //     }
-      //   },
-
-      // },
     });
 
     return updatedTax;
@@ -70,16 +59,6 @@ const findTaxSetupById = async (id) => {
   try {
     const tax = await prisma.crms_m_tax_setup.findUnique({
       where: { id: parseInt(id) },
-      // include:{
-      //   Account:{
-      //     select:{
-      //       firstName:true,
-      //       lastName:true,
-      //       id:true
-      //     }
-      //   },
-
-      // },
     });
     return tax;
   } catch (error) {
@@ -100,19 +79,10 @@ const deleteSetup = async (id) => {
 };
 
 // Get all taxs and include their roles
-const getAllTaxSetup = async () => {
+const getAllTaxSetup = async (is_active) => {
   try {
     const taxs = await prisma.crms_m_tax_setup.findMany({
-      // include:{
-      //   Account:{
-      //     select:{
-      //       firstName:true,
-      //       lastName:true,
-      //       id:true
-      //     }
-      //   },
-
-      // },
+      where:{is_active: is_active},
       orderBy: [{ updatedate: "desc" }, { createdate: "desc" }],
     });
 

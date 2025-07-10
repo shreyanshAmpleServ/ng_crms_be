@@ -15,6 +15,9 @@ const updateOrder = async (id, orderData,orderItemsData) => {
 const deleteOrder = async (id) => {
     return await orderModal.deleteOrder(id);
 };
+const syncToInvoice = async (id) => {
+    return await orderModal.syncToInvoice(id);
+};
 
 const getAllOrder = async (search ,page , size ,startDate, endDate) => {
     return await orderModal.getAllOrder(search,page , size ,startDate, endDate);
@@ -33,5 +36,6 @@ module.exports = {
     deleteOrder,
     getAllOrder,
     getSalesType,
-    generateOrderCode
+    generateOrderCode,
+    syncToInvoice
 };
