@@ -23,6 +23,7 @@ app.use(
       "https://crms.dcctz.com",
       "http://192.168.29.127:3000",
       "http://localhost:3000",
+      "http://localhost:3002",
       "http://192.168.29.55:3000",
       "http://10.160.5.101:3000",
     ], // Replace with your frontend URL

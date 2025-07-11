@@ -3,35 +3,55 @@ const CustomError = require("../../utils/CustomError");
 const prisma = require("../../utils/prismaClient");
 
 // Create a new call type
-const createAttachment = async (data) => {
+// const createAttachment = async (data) => {
+//   try {
+//     const callType = await prisma.crms_attachments.create({
+//       data: {
+//         ...data,
+//         related_entity_id: Number(data.related_entity_id) || null,
+//         is_active: data.is_active || "Y",
+//         createdby: data.createdby || 1,
+//         log_inst: data.log_inst || 1,
+//       },
+//       // include: {
+//       //   created_user: {
+//       //     select: {
+//       //       id: true,
+//       //       full_name: true,
+//       //       profile_img: true,
+//       //       crms_d_user_role: {
+//       //         select: {
+//       //           crms_m_role: {
+//       //             select: {
+//       //               role_name: true,
+//       //               id: true,
+//       //             },
+//       //           },
+//       //         },
+//       //       },
+//       //     },
+//       //   },
+//       // },
+//     });
+//     return callType;
+//   } catch (error) {
+//     console.log("Adding Attachment ", error);
+//     throw new CustomError(`Error creating call type: ${error.message}`, 500);
+//   }
+// };
+
+const createAttachment = async (data, user) => {
   try {
     const callType = await prisma.crms_attachments.create({
       data: {
         ...data,
         related_entity_id: Number(data.related_entity_id) || null,
         is_active: data.is_active || "Y",
-        createdby: data.createdby || 1,
+        createdby: user?.userid,
+        createdby_name: user?.username || null,
+        createdby_email: user?.email || null,
         log_inst: data.log_inst || 1,
       },
-      // include: {
-      //   created_user: {
-      //     select: {
-      //       id: true,
-      //       full_name: true,
-      //       profile_img: true,
-      //       crms_d_user_role: {
-      //         select: {
-      //           crms_m_role: {
-      //             select: {
-      //               role_name: true,
-      //               id: true,
-      //             },
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
     });
     return callType;
   } catch (error) {
@@ -59,13 +79,15 @@ const findAttachmentById = async (id) => {
 };
 
 // Update a call type
-const updateAttachment = async (id, data) => {
+const updateAttachment = async (id, data, user) => {
   try {
     const updatedCallType = await prisma.crms_attachments.update({
       where: { id: parseInt(Number(id)) },
       data: {
         ...data,
         related_entity_id: Number(data.related_entity_id) || null,
+        updatedby_name: user?.username || null,
+        updatedby_email: user?.email || null,
         updatedate: new Date(),
       },
       include: {

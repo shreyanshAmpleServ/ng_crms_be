@@ -1051,7 +1051,7 @@ model crms_d_orders {
   disc_prcnt      Decimal?             @db.Decimal(20, 5)
   tax_total       Decimal?             @db.Decimal(20, 5)
   doc_total       Decimal?             @db.Decimal(20, 5)
-  source_doc_id   String?              @db.NVarChar(50)
+  source_doc_id   Int?
   source_doc_type String?              @db.NVarChar(80)
   rounding        String?              @default("N", map: "DF_orders_rounding") @db.Char(1)
   remarks         String?              @db.NVarChar(800)
@@ -1179,7 +1179,7 @@ model crms_d_purchase_orders {
   disc_prcnt              Decimal?                      @db.Decimal(20, 5)
   tax_total               Decimal?                      @db.Decimal(20, 5)
   doc_total               Decimal?                      @db.Decimal(20, 5)
-  source_doc_id           String?                       @db.NVarChar(50)
+  source_doc_id           Int?
   source_doc_type         String?                       @db.NVarChar(80)
   rounding                String?                       @default("N", map: "DF_purchase_orders_rounding") @db.Char(1)
   remarks                 String?                       @db.NVarChar(800)
@@ -1240,7 +1240,7 @@ model crms_d_purchase_invoice {
   disc_prcnt                Decimal?                        @db.Decimal(20, 5)
   tax_total                 Decimal?                        @db.Decimal(20, 5)
   doc_total                 Decimal?                        @db.Decimal(20, 5)
-  source_doc_id             String?                         @db.NVarChar(50)
+  source_doc_id             Int?
   source_doc_type           String?                         @db.NVarChar(80)
   rounding                  String?                         @default("N", map: "DF_purchase_invoice_rounding") @db.Char(1)
   remarks                   String?                         @db.NVarChar(800)
@@ -1301,7 +1301,7 @@ model crms_d_invoice {
   disc_prcnt       Decimal?               @db.Decimal(20, 5)
   tax_total        Decimal?               @db.Decimal(20, 5)
   doc_total        Decimal?               @db.Decimal(20, 5)
-  source_doc_id    String?                @db.NVarChar(50)
+  source_doc_id    Int?
   source_doc_type  String?                @db.NVarChar(80)
   rounding         String?                @default("N", map: "DF_invoice_rounding") @db.Char(1)
   remarks          String?                @db.NVarChar(800)

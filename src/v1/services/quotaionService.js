@@ -1,26 +1,36 @@
-const quotationModal = require('../models/quotationModal');
+const quotationModal = require("../models/quotationModal");
 
-const createQuotation = async (orderData,orderItemsData) => {
-    return await quotationModal.createQuotation(orderData,orderItemsData);
+const createQuotation = async (orderData, orderItemsData) => {
+  return await quotationModal.createQuotation(orderData, orderItemsData);
 };
 
 const findQuotationById = async (id) => {
-    return await quotationModal.findQuotationById(id);
+  return await quotationModal.findQuotationById(id);
 };
 
-const updateQuotaion = async (id, orderData,orderItemsData) => {
-    return await quotationModal.updateQuotaion(id, orderData,orderItemsData);
+const updateQuotaion = async (id, orderData, orderItemsData) => {
+  return await quotationModal.updateQuotaion(id, orderData, orderItemsData);
 };
 
 const deleteQuotation = async (id) => {
-    return await quotationModal.deleteQuotation(id);
+  return await quotationModal.deleteQuotation(id);
 };
 
-const getAllQuotaion = async (search,page , size ,startDate, endDate) => {
-    return await quotationModal.getAllQuotaion(search,page , size ,startDate, endDate);
+const getAllQuotaion = async (search, page, size, startDate, endDate) => {
+  return await quotationModal.getAllQuotaion(
+    search,
+    page,
+    size,
+    startDate,
+    endDate
+  );
 };
 const generateQuotaionCode = async () => {
-    return await quotationModal.generateQuotaionCode();
+  return await quotationModal.generateQuotaionCode();
+};
+
+const quotationToInvoice = async (quotationId) => {
+  return await quotationModal.quotationToInvoice(quotationId);
 };
 
 module.exports = {
@@ -29,5 +39,6 @@ module.exports = {
   updateQuotaion,
   deleteQuotation,
   getAllQuotaion,
-  generateQuotaionCode
+  generateQuotaionCode,
+  quotationToInvoice,
 };
