@@ -51,6 +51,8 @@ const TaskReportRoutes = require("../v1/routes/TaskReportRoutes");
 const menuRoute = require("../v1/routes/menuRoute");
 const dashboardLeadRoutes = require("../v1/routes/dashboardLeadRoutes");
 const redirectLoginRoute = require("../v1/routes/redirectLoginRoute");
+const gmailAccessRoute = require("../v1/routes/gmaiAccess");
+const gmailCallbackRoute = require("./gmailRoute");
 
 const router = express.Router();
 
@@ -108,6 +110,8 @@ router.use("/v1", TaskReportRoutes);
 router.use("/v1", menuRoute);
 router.use("/v1", dashboardLeadRoutes);
 router.use("/v1", redirectLoginRoute);
+router.use("/v1", gmailCallbackRoute);
+router.use("/v1", gmailAccessRoute);
 
 // Add future versions here
 // Example: router.use('/v2', v2Routes);
