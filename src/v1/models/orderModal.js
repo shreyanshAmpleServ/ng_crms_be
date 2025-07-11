@@ -337,6 +337,178 @@ const generateOrderCode = async () => {
   }
 };
 
+// const syncOrderToInvoice = async (orderId) => {
+//   const order = await prisma.crms_d_orders.findUnique({
+//     where: { id: Number(orderId) },
+//     include: {
+//       order_items: true,
+//     },
+//   });
+
+//   if (!order) {
+//     throw new Error(`Order with ID ${orderId} not found`);
+//   }
+//   return await prisma.$transaction(async (prisma) => {
+//     const invoice = await prisma.crms_d_invoice.create({
+//       data: {
+//         cust_id: order.cust_id,
+//         order_code: null,
+//         address: order.address,
+//         cust_ref_no: order.cust_ref_no,
+//         cont_person: order.cont_person,
+//         currency: order.currency,
+//         due_date: order.due_date,
+//         total_bef_tax: order.total_bef_tax,
+//         disc_prcnt: order.disc_prcnt,
+//         tax_total: order.tax_total,
+//         doc_total: order.doc_total,
+//         source_doc_id: `${order.id}`,
+//         source_doc_type: "Order",
+//         rounding: order.rounding,
+//         remarks: order.remarks,
+//         shipto: order.shipto,
+//         billto: order.billto,
+//         sales_type: order.sales_type,
+//         apr_status: order.apr_status,
+//         apr_by: order.apr_by,
+//         apr_date: order.apr_date,
+//         apr_remark: order.apr_remark,
+//         auto_approved: order.auto_approved,
+//         status: order.status,
+//         createdby: order.createdby,
+//         updatedby: order.updatedby,
+//         createdate: new Date(),
+//         updatedate: new Date(),
+//         total_amount: order.total_amount,
+//         rounding_amount: order.rounding_amount,
+//         attachment1: order.attachment1,
+//         attachment2: order.attachment2,
+//       },
+//     });
+
+//     await prisma.crms_d_invoice_items.createMany({
+//       data: order.order_items.map((item) => ({
+//         item_id: item.item_id,
+//         item_name: item.item_name,
+//         quantity: item.quantity,
+//         delivered_qty: item.delivered_qty,
+//         unit_price: item.unit_price,
+//         currency: item.currency,
+//         rate: item.rate,
+//         disc_prcnt: item.disc_prcnt,
+//         tax_id: item.tax_id,
+//         tax_per: item.tax_per,
+//         line_tax: item.line_tax,
+//         total_bef_disc: item.total_bef_disc,
+//         total_amount: item.total_amount,
+//         parent_id: invoice.id,
+//         disc_amount: item.disc_amount,
+//       })),
+//     });
+
+//     return invoice;
+//   });
+// };
+
+const generateInvoiceCode = async () => {
+  try {
+    const latestInvoice = await prisma.crms_d_invoice.findFirst({
+      orderBy: { id: "desc" },
+    });
+    const nextId = latestInvoice ? latestInvoice.id + 1 : 1;
+    return `INV-00${nextId}`;
+  } catch (error) {
+    console.error("Error generating invoice code:", error);
+    throw new Error("Error generating invoice code");
+  }
+};
+
+const syncOrderToInvoice = async (orderId) => {
+  const order = await prisma.crms_d_orders.findUnique({
+    where: { id: Number(orderId) },
+    include: {
+      order_items: true,
+    },
+  });
+
+  if (!order) {
+    throw new Error(`Order with ID ${orderId} not found`);
+  }
+
+  return await prisma.$transaction(async (prisma) => {
+    const invoiceCode = await generateInvoiceCode();
+
+    // 1. Create the invoice with the generated code
+    const invoice = await prisma.crms_d_invoice.create({
+      data: {
+        order_code: invoiceCode,
+        cust_id: order.cust_id,
+        address: order.address,
+        cust_ref_no: order.cust_ref_no,
+        cont_person: order.cont_person,
+        currency: order.currency,
+        due_date: order.due_date,
+        total_bef_tax: order.total_bef_tax,
+        disc_prcnt: order.disc_prcnt,
+        tax_total: order.tax_total,
+        doc_total: order.doc_total,
+        source_doc_id: Number(orderId),
+        source_doc_type: "Order",
+        rounding: order.rounding,
+        remarks: order.remarks,
+        shipto: order.shipto,
+        billto: order.billto,
+        sales_type: order.sales_type,
+        apr_status: order.apr_status,
+        apr_by: order.apr_by,
+        apr_date: order.apr_date,
+        apr_remark: order.apr_remark,
+        auto_approved: order.auto_approved,
+        status: order.status,
+        createdby: order.createdby,
+        updatedby: order.updatedby,
+        createdate: new Date(),
+        updatedate: new Date(),
+        total_amount: order.total_amount,
+        rounding_amount: order.rounding_amount,
+        attachment1: order.attachment1,
+        attachment2: order.attachment2,
+      },
+    });
+
+    // 2. Insert the invoice items
+    await prisma.crms_d_invoice_items.createMany({
+      data: order.order_items.map((item) => ({
+        item_id: item.item_id,
+        item_name: item.item_name,
+        quantity: item.quantity,
+        delivered_qty: item.delivered_qty,
+        unit_price: item.unit_price,
+        currency: item.currency,
+        rate: item.rate,
+        disc_prcnt: item.disc_prcnt,
+        tax_id: item.tax_id,
+        tax_per: item.tax_per,
+        line_tax: item.line_tax,
+        total_bef_disc: item.total_bef_disc,
+        total_amount: item.total_amount,
+        parent_id: invoice.id,
+        disc_amount: item.disc_amount,
+      })),
+    });
+
+    // 3. ✅ Update order with the same code
+    await prisma.crms_d_orders.update({
+      where: { id: order.id },
+      data: {
+        order_code: invoiceCode,
+      },
+    });
+
+    return invoice;
+  });
+};
+
 module.exports = {
   createOrder,
   findOrderById,
@@ -346,4 +518,5 @@ module.exports = {
   getSalesType,
   generateOrderCode,
   syncToInvoice,
+  syncOrderToInvoice,
 };

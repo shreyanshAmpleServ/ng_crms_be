@@ -300,6 +300,86 @@ const generateQuotaionCode = async () => {
     throw new CustomError("Error retrieving quotation code", 503);
   }
 };
+const quotationToInvoice = async (quotationId) => {
+  const quotation = await prisma.crms_d_quotations.findUnique({
+    where: { id: quotationId },
+    include: { quotation_items: true },
+  });
+
+  if (!quotation) {
+    throw new Error("Quotation not found");
+  }
+
+  const latestOrder = await prisma.crms_d_orders.findFirst({
+    orderBy: { id: "desc" },
+  });
+
+  const nextId = latestOrder ? latestOrder.id + 1 : 1;
+  const newOrderCode = `ORD-00${nextId}`;
+
+  const result = await prisma.$transaction(async (prisma) => {
+    const createdOrder = await prisma.crms_d_orders.create({
+      data: {
+        order_code: newOrderCode,
+        cust_id: quotation.vendor_id,
+        address: quotation.address,
+        cust_ref_no: quotation.cust_ref_no,
+        cont_person: quotation.cont_person,
+        currency: quotation.currency,
+        due_date: quotation.due_date,
+        total_bef_tax: quotation.total_bef_tax,
+        disc_prcnt: quotation.disc_prcnt,
+        tax_total: quotation.tax_total,
+        doc_total: quotation.doc_total,
+        source_doc_id: Number(quotation.id),
+        source_doc_type: "quotation",
+        rounding: quotation.rounding,
+        remarks: quotation.remarks,
+        shipto: quotation.shipto,
+        billto: quotation.billto,
+        sales_type: quotation.sales_type,
+        apr_status: quotation.apr_status,
+        apr_by: quotation.apr_by,
+        apr_date: quotation.apr_date,
+        apr_remark: quotation.apr_remark,
+        auto_approved: quotation.auto_approved,
+        status: quotation.status,
+        createdby: quotation.createdby,
+        updatedby: quotation.updatedby,
+        createdate: new Date(),
+        updatedate: new Date(),
+        total_amount: quotation.total_amount,
+        rounding_amount: quotation.rounding_amount,
+        attachment1: quotation.attachment1,
+        attachment2: quotation.attachment2,
+      },
+    });
+
+    await prisma.crms_d_order_items.createMany({
+      data: quotation.quotation_items.map((item) => ({
+        item_id: item.item_id,
+        item_name: item.item_name,
+        quantity: item.quantity,
+        delivered_qty: item.delivered_qty,
+        unit_price: item.unit_price,
+        currency: item.currency,
+        rate: item.rate,
+        disc_prcnt: item.disc_prcnt,
+        tax_id: item.tax_id,
+        tax_per: item.tax_per,
+        line_tax: item.line_tax,
+        total_bef_disc: item.total_bef_disc,
+        total_amount: item.total_amount,
+        parent_id: createdOrder.id,
+        disc_amount: item.disc_amount,
+      })),
+    });
+
+    return createdOrder;
+  });
+
+  return result;
+};
 
 module.exports = {
   createQuotation,
@@ -308,4 +388,5 @@ module.exports = {
   deleteQuotation,
   getAllQuotaion,
   generateQuotaionCode,
+  quotationToInvoice,
 };

@@ -142,7 +142,6 @@ model crms_m_user {
   address          String?            @db.NVarChar(255)
   phone            String?            @db.NVarChar(15)
   profile_img      String?            @db.NVarChar(255)
-  created_user     crms_attachments[]
   crms_d_user_role crms_d_user_role[]
 }
 
