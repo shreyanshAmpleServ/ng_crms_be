@@ -22,7 +22,8 @@ const getAllAttachment = async (
   size,
   startDate,
   endDate,
-  related_type
+  related_type,
+  related_type_id
 ) => {
   return await AttachmentModel.getAllAttachment(
     search,
@@ -30,7 +31,8 @@ const getAllAttachment = async (
     size,
     startDate,
     endDate,
-    related_type
+    related_type,
+    related_type_id
   );
 };
 

@@ -346,52 +346,128 @@ const getAllLeads = async (page, size, search, startDate, endDate, status) => {
 };
 
 // Get all leads grouped by lost reasons
-const getAllLeadsGroupedByLostReasons = async () => {
-  try {
-    const leads = await prisma.LostReasons.findMany({
-      select: {
-        id: true,
-        name: true,
-        colorCode: true,
-        crms_leads: {
-          select: {
-            id: true,
-            company_id: true,
-            first_name: true,
-            last_name: true,
-            email: true,
-            phone: true,
-            title: true,
-            annual_revenue: true,
-            street: true,
-            city: true,
-            state: true,
-            zipcode: true,
-            country: true,
-            is_active: true,
-            createdate: true,
-            updatedate: true,
-          },
+const getAllLeadsGroupedByLostReasons = async (search) => {
+    try {
+      // Step 1: Get all lost reasons
+      const lostReasons = await prisma.LostReasons.findMany({
+        select: {
+          id: true,
+          name: true,
+          colorCode: true,
         },
-      },
-      orderBy: {
-        order: "asc", // Orders by name in ascending order
-      },
-    });
+        orderBy: {
+          order: 'asc',
+        },
+      });
 
-    return leads.map((lostReason) => {
-      const total_lead = lostReason.crms_leads.length;
-      const total_revenue = lostReason.crms_leads.reduce(
-        (sum, lead) => sum + (lead.annual_revenue || 0),
+    const leadFilter = {
+      ...(search && {
+        OR: [
+          {
+            first_name: {
+              contains: search.toLowerCase(),
+             
+            },
+          },
+          {
+            title: {
+              contains: search.toLowerCase(),
+            },
+          },
+        ],
+      }),
+    };
+
+    // const leads = await prisma.LostReasons.findMany({
+    //   select: {
+    //     id: true,
+    //     name: true,
+    //     colorCode: true,
+    //     crms_leads: {
+    //       select: {
+    //         id: true,
+    //         company_id: true,
+    //         first_name: true,
+    //         last_name: true,
+    //         email: true,
+    //         phone: true,
+    //         title: true,
+    //         annual_revenue: true,
+    //         street: true,
+    //         city: true,
+    //         state: true,
+    //         zipcode: true,
+    //         country: true,
+    //         is_active: true,
+    //         createdate: true,
+    //         updatedate: true,
+    //       },
+    //     },
+    //   },
+    //   orderBy: {
+    //     order: "asc", // Orders by name in ascending order
+    //   },
+    // });
+
+       // Step 3: Get all leads with their lead_status
+     
+       const leads = await prisma.crms_leads.findMany({
+        where: {
+          ...leadFilter,
+        },
+        select: {
+          id: true,
+          lead_status: true,
+          first_name: true,
+          last_name: true,
+          title: true,
+          email: true,
+          phone: true,
+          company_id: true,
+          annual_revenue: true,
+          street: true,
+          city: true,
+          state: true,
+          zipcode: true,
+          country: true,
+          is_active: true,
+          createdate: true,
+          updatedate: true,
+          company_icon: true,
+        },
+      });
+      // return leads.map((lostReason) => {
+      //   const total_lead = lostReason.crms_leads.length;
+      //   const total_revenue = lostReason.crms_leads.reduce(
+      //     (sum, lead) => sum + Number(lead.annual_revenue || 0),
+      //     0
+      //   );
+
+    //   return {
+    //     ...lostReason,
+    //     total_lead,
+    //     total_revenue,
+    //   };
+    // });
+    // Step 4: Group leads by lead_status
+    const leadsGrouped = lostReasons.map((reason) => {
+      const matchedLeads = leads.filter(
+        (lead) => lead.lead_status === reason.id
+      );
+      const total_revenue = matchedLeads.reduce(
+        (sum, lead) => sum + Number(lead.annual_revenue || 0),
         0
       );
 
       return {
-        ...lostReason,
-        total_lead,
+        ...reason,
+        crms_leads: matchedLeads,
+        total_lead: matchedLeads.length,
         total_revenue,
       };
     });
+
+    return leadsGrouped;
   } catch (error) {
     console.log(error);
     throw new CustomError(

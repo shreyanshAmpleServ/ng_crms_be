@@ -102,14 +102,15 @@ const deleteAttachment = async (req, res, next) => {
 
 const getAllAttachment = async (req, res, next) => {
   try {
-    const { page, size, search, startDate, endDate, related_type } = req.query;
+    const { page, size, search, startDate, endDate, related_type,related_type_id } = req.query;
     const attachmentData = await AttachmentService.getAllAttachment(
       search,
       Number(page),
       Number(size),
       startDate && moment(startDate),
       endDate && moment(endDate),
-      related_type
+      related_type,
+      Number(related_type_id)
     );
     res.status(200).success("File attachment get successfully", attachmentData);
   } catch (error) {

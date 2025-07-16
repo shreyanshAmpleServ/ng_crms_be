@@ -140,7 +140,8 @@ const getAllAttachment = async (
   size,
   startDate,
   endDate,
-  related_type
+  related_type,
+  related_type_id
 ) => {
   try {
     page = page || 1;
@@ -172,6 +173,9 @@ const getAllAttachment = async (
     }
     if (related_type) {
       filters.related_entity_type = { equals: related_type };
+    }
+    if (related_type_id) {
+      filters.related_entity_id = { equals: related_type_id };
     }
     // Handle date filtering
     if (startDate && endDate) {

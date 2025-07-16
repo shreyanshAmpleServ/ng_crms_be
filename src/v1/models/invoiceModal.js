@@ -2,6 +2,30 @@ const { PrismaClient } = require("@prisma/client");
 const CustomError = require("../../utils/CustomError");
 const prisma = require("../../utils/prismaClient");
 
+const serializeItemsData =(items,parentId)=>{
+  const fixDecimal = (value) => {
+    const num = Number(value);
+    return isNaN(num) ? null : parseFloat(num.toFixed(2));
+  };
+
+  return items.map(item => ({
+    item_id: Number(item?.item_id) || 0,
+    item_name: item?.item_name ?? null,
+    quantity: Number(item?.quantity),
+    delivered_qty: Number(item?.delivered_qty),
+    unit_price: fixDecimal(item?.unit_price),
+    currency: item?.currency  ? Number(item.currency) : null,
+    rate: fixDecimal(item?.rate),
+    disc_prcnt: fixDecimal(item?.disc_prcnt),
+    tax_id: item?.tax_id ? Number(item.tax_id) : null,
+    tax_per: fixDecimal(item?.tax_per),
+    line_tax: fixDecimal(item?.line_tax),
+    total_bef_disc: fixDecimal(item?.total_bef_disc),
+    total_amount: fixDecimal(item?.total_amount),
+    disc_amount: fixDecimal(item?.disc_amount),
+    parent_id: parentId,
+  }));
+}
 // Create a new  invoice
 const createInvoice = async (orderData, orderItemsData) => {
   try {
@@ -14,20 +38,23 @@ const createInvoice = async (orderData, orderItemsData) => {
           currency: Number(orderData?.currency) || null,
           sales_type: Number(orderData?.sales_type) || null,
           rounding_amount: Number(orderData?.rounding_amount) || null,
+          source_doc_id: Number(orderData?.source_doc_id) || null,
           createdate: new Date(),
           updatedate: new Date(),
           updatedby: orderData.createdby || 1,
           updatedby: orderData.createdby || 1,
         },
       });
+const serializeData = serializeItemsData(orderItemsData, Number(createdOrder.id))
       // Step 2: Create OrderItems using the created order's ID
       const orderItems = await prisma.crms_d_invoice_items.createMany({
-        data: orderItemsData.map((item) => ({
-          ...item,
-          item_id: Number(item?.item_id) || null,
-          tax_id: Number(item?.tax_id) || null,
-          parent_id: Number(createdOrder.id),
-        })),
+        data: serializeData
+      //   data: orderItemsData.map((item) => ({
+      //     ...item,
+      //     item_id: Number(item?.item_id) || null,
+      //     tax_id: Number(item?.tax_id) || null,
+      //     parent_id: Number(createdOrder.id),
+      //   })),
       });
 
       // Fetch the newly created order with associated data
@@ -78,6 +105,7 @@ const updateInvoice = async (orderId, orderData, orderItemsData) => {
           ...orderData,
           cust_id: orderData?.cust_id ? Number(orderData.cust_id) : null,
           currency: orderData?.currency ? Number(orderData.currency) : null,
+          source_doc_id: Number(orderData?.source_doc_id) || null,
           sales_type: orderData?.sales_type
             ? Number(orderData.sales_type)
             : null,

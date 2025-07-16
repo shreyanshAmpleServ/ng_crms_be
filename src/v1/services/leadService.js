@@ -19,8 +19,8 @@ const deleteLead = async (id) => {
 const getAllLeads = async (page , size , search ,startDate,endDate ,status ) => {
   return await leadsModel.getAllLeads(page , size , search ,startDate,endDate ,status );
 };
-const getAllLeadsGroupedByLostReasons = async () => {
-  return await leadsModel.getAllLeadsGroupedByLostReasons();
+const getAllLeadsGroupedByLostReasons = async (search) => {
+  return await leadsModel.getAllLeadsGroupedByLostReasons(search);
 };
 
 

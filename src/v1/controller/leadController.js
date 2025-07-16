@@ -138,7 +138,7 @@ const getAllLeads = async (req, res, next) => {
 
 const getAllLeadsGroupedByLostReasons = async (req, res, next) => {
   try {
-    const leads = await leadService.getAllLeadsGroupedByLostReasons();
+    const leads = await leadService.getAllLeadsGroupedByLostReasons(req.query.search);
     res.status(200).success(null, leads);
   } catch (error) {
     next(error);
